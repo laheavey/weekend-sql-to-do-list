@@ -5,7 +5,7 @@ const taskRouter = express.Router();
 const pool = require('./modules/pool.js');
 
 taskRouter.get('/', (req,res) => {
-    console.log('In GET /task_list');
+    console.log('GET /task_list');
     let sqlQuery = 
     `SELECT * FROM "task_list"
         ORDER BY "id";`
@@ -41,7 +41,7 @@ taskRouter.post('/', (req,res) => {
 })
 
 taskRouter.put('/:id', (req,res) => {
-    console.log('In PUT /task_list');
+    console.log('PUT /task_list');
     console.log('req.params:', req.params);
     console.log('req.body:', req.body);
 
@@ -53,11 +53,29 @@ taskRouter.put('/:id', (req,res) => {
 
     pool.query(sqlQuery, sqlValues)
     .then((response) => {
-        console.log(response);
         res.sendStatus(200);
     })
     .catch((error) => {
         console.log('Error in PUT /task_list: ', error);
+        res.sendStatus(500);
+    })
+})
+
+taskRouter.delete('/:id', (req,res) => {
+    console.log('DELETE /task_list');
+    console.log('req.params:', req.params);
+
+    let sqlQuery = 
+    `DELETE FROM "task_list"
+        WHERE "id"=$1;`;
+    let sqlValues = [req.params.id];
+
+    pool.query(sqlQuery, sqlValues)
+    .then((response) => {
+        res.sendStatus(200);
+    })
+    .catch((error) => {
+        console.log('Error in DELETE /task_list: ', error);
         res.sendStatus(500);
     })
 })

@@ -36,8 +36,8 @@ Additional README details can be found [here](https://github.com/PrimeAcademy/re
     [✅] 'Render' function
 * Each Task should have an option to 'Complete' or 'Delete'. Deleting a Task should remove it both from the front end as well as the Database.
     [✅] Complete button
-    [ ] 'Finish' function
-    [ ] PUT code
+    [✅] 'Finish' function
+    [✅] PUT code
     [✅] Delete button 
     [ ] 'Delete' function
     [ ] DELETE code

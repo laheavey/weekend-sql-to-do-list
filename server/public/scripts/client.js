@@ -4,7 +4,7 @@ function onReady(){
     getTasks();
     $('#submitButton').on('click', createTasks);
     $('body').on('click', '.completeButton', completeTasks);
-    // $('.deleteButton').on('click', deleteTasks);
+    $('body').on('click', '.deleteButton', deleteTasks);
 }
 
 function getTasks () {
@@ -74,5 +74,20 @@ function completeTasks () {
     })
     .catch((error) => {
         console.log('Error in PUT /task_list: ', error);
+    })
+}
+
+function deleteTasks () {
+    let idToDelete = $(this).parent().parent().data().id;
+    $.ajax({
+        method: 'DELETE',
+        url: `/task_list/${idToDelete}`,
+    })
+    .then((response) => {
+        console.log('Response in DELETE /task_list: ', response)
+        getTasks();
+    })
+    .catch((error) => {
+        console.log('Error in DELETE /task_list: ', error);
     })
 }
