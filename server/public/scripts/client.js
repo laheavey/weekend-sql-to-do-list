@@ -3,6 +3,8 @@ $(document).ready(onReady);
 function onReady(){
     getTasks();
     $('#submitButton').on('click', createTasks);
+    $('body').on('click', '.completeButton', completeTasks);
+    // $('.deleteButton').on('click', deleteTasks);
 }
 
 function getTasks () {
@@ -13,14 +15,17 @@ function getTasks () {
     .then((response) => {
         $('tbody').empty();
         for (let tasks of response) {
-
             $('tbody').append(
-                ` <tr>
+                ` <tr data-id=${tasks.id}>
                     <td>${tasks.status}</td>
                     <td>${tasks.task}</td>
                     <td>${tasks.due_date}</td>
-                    <td><button class="completeButton">Complete</button></td>
-                    <td><button class="deleteButton">Delete</button></td>
+                    <td>
+                        <button class="completeButton">Complete</button>
+                    </td>
+                    <td>
+                        <button class="deleteButton">Delete</button>
+                    </td>
                 </tr> `
             )
         }
@@ -52,4 +57,22 @@ function createTasks () {
 
     $('#taskName').val('');
     $('#taskDueDate').val('');
+}
+
+function completeTasks () {
+    let idToComplete = $(this).parent().parent().data().id;
+    $.ajax({
+        method: 'PUT',
+        url: `/task_list/${idToComplete}`,
+        data: {
+            status: 'COMPLETE'
+        }
+    })
+    .then((response) => {
+        console.log('Response in PUT /task_list: ', response)
+        getTasks();
+    })
+    .catch((error) => {
+        console.log('Error in PUT /task_list: ', error);
+    })
 }
