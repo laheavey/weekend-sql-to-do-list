@@ -9,20 +9,20 @@ Your project description goes here. What problem did you solve? How did you solv
 Additional README details can be found [here](https://github.com/PrimeAcademy/readme-template/blob/master/README.md).
 
 0. BASE
-    [ ] index.html
-    [ ] styles.css
-    [ ] client.js
-    [ ] server.js
-    [ ] jquery.js
-    [ ] task-router.js
-    [ ] pool.js
-    [ ] /server folder
-    [ ] /public folder
-    [ ] /modules folder
-    [ ] /scripts folder
-    [ ] .gitignore
-    [ ] NPM INSTALL - express, pg? 
-    [ ] Check notes for boilerplate
+    [✅] index.html
+    [✅] styles.css
+    [✅] client.js
+    [✅] server.js
+    [✅] jquery.js
+    [✅] task-router.js
+    [✅] pool.js
+    [✅] /server folder
+    [✅] /public folder
+    [✅] /modules folder
+    [✅] /scripts folder
+    [✅] .gitignore
+    [✅] NPM INSTALL - express, pg, pool 
+    [✅] Check notes for boilerplate
 
 1. Create a front end experience that allows a user to create a Task.
     [ ] Create an input field for task title, due date? 
