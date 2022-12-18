@@ -22,7 +22,7 @@ function getTasks () {
                         <div class="card-body">
                             <h5 class="card-title position-relative">${task.task}</h5>
                                 <span ${checkOverdue(task)}></span>
-                            <h6 class="card-subtitle mb-2 text-muted fw-lighter">Due on: ${task.due_date}</h6>
+                            <h6 class="due-date card-subtitle mb-2 text-muted fw-lighter">Due on: ${task.due_date}</h6>
                             <hr>
                             <p class="card-text fw-light">${task.notes}</p>
                         </div>
@@ -34,9 +34,11 @@ function getTasks () {
                                 <button id="completeButton" class="btn text-success" title="Complete">
                                     <i class="bi bi-check"></i>
                                 </button>
-                                <button id="delegateButton" class="btn" title="Delegate">
-                                    <i class="bi bi-at"></i>
-                                </button>
+                                <a href="mailto:test@test.com?subject=${task.task}&body=Can you ${task.task} for me? Don't forget: ${task.notes} Thank you!">
+                                    <button id="delegateButton" class="btn" title="Delegate">
+                                        <i class="bi bi-at"></i>
+                                    </button>
+                                </a>
                                 <button id="procrastinateButton" class="btn text-primary" title="Procrastinate">
                                     <i class="bi bi-fast-forward"></i>
                                 </button>
@@ -44,7 +46,6 @@ function getTasks () {
                         </div>
                     </div>
                 </div>`)
-
         }
     })
     .catch((error) => {
@@ -85,13 +86,11 @@ function completeTasks () {
         method: 'PUT',
         url: `/task_list/${idToComplete}`,
         data: {
-            status: 'COMPLETE'
+            status: 'COMPLETE',
         }
     })
     .then((response) => {
         console.log('Response in PUT /task_list: ', response)
-        let taskToComplete = $(this).parent().parent().parent();
-        taskToComplete.addClass('card bg-secondary bg-opacity-25 text-muted text-decoration-line-through')
         getTasks();
     })
     .catch((error) => {
@@ -130,13 +129,12 @@ function deleteTasks () {
 
 function procrastinateTasks () {
     let taskToProcrasinate = $(this).parent().parent().parent();
-
     taskToProcrasinate.hide();
 }
 
 function checkCompletion(task) {
     if (task.status === 'COMPLETE') {
-      return 'class="card bg-secondary bg-opacity-25 text-muted text-decoration-line-through"';
+        return 'class="card bg-secondary bg-opacity-25 text-muted text-decoration-line-through"';
     }
     else {
       return 'class="card"';
@@ -147,10 +145,7 @@ function checkOverdue(task){
     let today = new Date();
     let taskDate = new Date(task.due_date);
 
-    // console.log(today.toDateString());
-    // console.log('Task date: ',taskDate.toDateString());
-
-    if (today > taskDate){
+    if (today > taskDate && task.status !== 'COMPLETE'){
         return 'class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"';
     } else {
         return '';
