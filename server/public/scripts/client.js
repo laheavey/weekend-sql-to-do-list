@@ -3,8 +3,9 @@ $(document).ready(onReady);
 function onReady(){
     getTasks();
     $('#submitButton').on('click', createTasks);
-    $('body').on('click', '.completeButton', completeTasks);
-    $('body').on('click', '.deleteButton', deleteTasks);
+    $('body').on('click', '#completeButton', completeTasks);
+    $('body').on('click', '#deleteButton', deleteTasks);
+    $('body').on('click', '#procrastinateButton', procrastinateTasks);
 }
 
 function getTasks () {
@@ -13,21 +14,37 @@ function getTasks () {
         url: '/task_list'
     })
     .then((response) => {
-        $('tbody').empty();
-        for (let tasks of response) {
-            $('tbody').append(
-                ` <tr data-id=${tasks.id}>
-                    <td>${tasks.status}</td>
-                    <td>${tasks.task}</td>
-                    <td>${tasks.due_date}</td>
-                    <td>
-                        <button class="completeButton">Complete</button>
-                    </td>
-                    <td>
-                        <button class="deleteButton">Delete</button>
-                    </td>
-                </tr> `
-            )
+        $('#taskList').empty();
+        for (let task of response) {
+            $('#taskList').append(`
+                <div data-id=${task.id} class="col">
+                    <div ${checkCompletion(task)}>
+                        <div class="card-body">
+                            <h5 class="card-title position-relative">${task.task}</h5>
+                                <span ${checkOverdue(task)}></span>
+                            <h6 class="card-subtitle mb-2 text-muted fw-lighter">Due on: ${task.due_date}</h6>
+                            <hr>
+                            <p class="card-text fw-light">${task.notes}</p>
+                        </div>
+                        <div class="card-footer">
+                            <div class="btn-group btn-group-sm">
+                                <button id="deleteButton" class="btn" title="Delete">
+                                    <i class="bi bi-x"></i>
+                                </button>
+                                <button id="completeButton" class="btn" title="Complete">
+                                    <i class="bi bi-check"></i>
+                                </button>
+                                <button id="delegateButton" class="btn" title="Delegate">
+                                    <i class="bi bi-at"></i>
+                                </button>
+                                <button id="procrastinateButton" class="btn" title="Procrastinate">
+                                    <i class="bi bi-fast-forward"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`)
+
         }
     })
     .catch((error) => {
@@ -39,7 +56,8 @@ function createTasks () {
     let newTask = {
         status: 'INCOMPLETE',
         task: $('#taskName').val(),
-        dueDate: $('#taskDueDate').val()
+        dueDate: $('#taskDueDate').val(),
+        notes: $('#taskNotes').val(),
     }    
 
     $.ajax({
@@ -57,10 +75,12 @@ function createTasks () {
 
     $('#taskName').val('');
     $('#taskDueDate').val('');
+    $('#taskNotes').val('');
 }
 
 function completeTasks () {
-    let idToComplete = $(this).parent().parent().data().id;
+    let idToComplete = $(this).parent().parent().parent().parent().data().id;
+
     $.ajax({
         method: 'PUT',
         url: `/task_list/${idToComplete}`,
@@ -70,6 +90,8 @@ function completeTasks () {
     })
     .then((response) => {
         console.log('Response in PUT /task_list: ', response)
+        let taskToComplete = $(this).parent().parent().parent();
+        taskToComplete.addClass('card bg-secondary bg-opacity-25 text-muted text-decoration-line-through')
         getTasks();
     })
     .catch((error) => {
@@ -78,7 +100,7 @@ function completeTasks () {
 }
 
 function deleteTasks () {
-    let idToDelete = $(this).parent().parent().data().id;
+    let idToDelete = $(this).parent().parent().parent().parent().data().id;
     $.ajax({
         method: 'DELETE',
         url: `/task_list/${idToDelete}`,
@@ -90,4 +112,34 @@ function deleteTasks () {
     .catch((error) => {
         console.log('Error in DELETE /task_list: ', error);
     })
+}
+
+function procrastinateTasks () {
+    let taskToProcrasinate = $(this).parent().parent().parent();
+
+    taskToProcrasinate.hide();
+}
+
+function checkCompletion(task) {
+    if (task.status === 'COMPLETE') {
+      return 'class="card bg-secondary bg-opacity-25 text-muted text-decoration-line-through"';
+    }
+    else {
+      return 'class="card"';
+    }
+  }
+
+function checkOverdue(task){
+    let today = new Date();
+    let taskDate = new Date(task.due_date);
+
+    // console.log(today.toDateString());
+    // console.log('Task date: ',taskDate.toDateString());
+
+    if (today > taskDate){
+        return 'class="position-absolute top-0 start-100 translate-middle p-2 bg-danger border border-light rounded-circle"';
+    } else {
+        return '';
+    }
+
 }
