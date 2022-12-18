@@ -28,16 +28,16 @@ function getTasks () {
                         </div>
                         <div class="card-footer">
                             <div class="btn-group btn-group-sm">
-                                <button id="deleteButton" class="btn" title="Delete">
+                                <button id="deleteButton" class="btn text-danger" title="Delete">
                                     <i class="bi bi-x"></i>
                                 </button>
-                                <button id="completeButton" class="btn" title="Complete">
+                                <button id="completeButton" class="btn text-success" title="Complete">
                                     <i class="bi bi-check"></i>
                                 </button>
                                 <button id="delegateButton" class="btn" title="Delegate">
                                     <i class="bi bi-at"></i>
                                 </button>
-                                <button id="procrastinateButton" class="btn" title="Procrastinate">
+                                <button id="procrastinateButton" class="btn text-primary" title="Procrastinate">
                                     <i class="bi bi-fast-forward"></i>
                                 </button>
                             </div>
@@ -101,17 +101,31 @@ function completeTasks () {
 
 function deleteTasks () {
     let idToDelete = $(this).parent().parent().parent().parent().data().id;
-    $.ajax({
-        method: 'DELETE',
-        url: `/task_list/${idToDelete}`,
+
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, this task will be gone forever!",
+        icon: "warning",
+        dangerMode: true,
+        buttons: ["Cancel", "Confirm"],
     })
-    .then((response) => {
-        console.log('Response in DELETE /task_list: ', response)
-        getTasks();
+    .then((value) => {
+        if (value){
+            $.ajax({
+                method: 'DELETE',
+                url: `/task_list/${idToDelete}`,
+            })
+            .then((response) => {
+                console.log('Response in DELETE /task_list: ', response)
+                getTasks();
+            })
+            .catch((error) => {
+                console.log('Error in DELETE /task_list: ', error);
+            })
+        }
     })
-    .catch((error) => {
-        console.log('Error in DELETE /task_list: ', error);
-    })
+
+
 }
 
 function procrastinateTasks () {
