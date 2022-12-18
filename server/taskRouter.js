@@ -25,11 +25,11 @@ taskRouter.post('/', (req,res) => {
 
     let sqlQuery = 
     `INSERT INTO "task_list"
-    ("status", "task", "due_date")
+    ("status", "task", "due_date", "notes")
     VALUES
-    ($1, $2, $3);`
+    ($1, $2, $3, $4);`
 
-    let sqlValues = [req.body.status, req.body.task, req.body.dueDate]
+    let sqlValues = [req.body.status, req.body.task, req.body.dueDate, req.body.notes]
     pool.query(sqlQuery, sqlValues)
     .then((response) => {
         res.sendStatus(201);

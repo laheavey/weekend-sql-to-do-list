@@ -39,7 +39,7 @@ Additional README details can be found [here](https://github.com/PrimeAcademy/re
     [✅] 'Finish' function
     [✅] PUT code
     [✅] Delete button 
-    [ ] 'Delete' function
-    [ ] DELETE code
+    [✅] 'Delete' function
+    [✅] DELETE code
 * When a Task is complete, its visual representation should change on the front end. 
     [ ] Change CSS based on complete status
